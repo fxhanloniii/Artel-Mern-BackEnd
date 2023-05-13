@@ -22,6 +22,7 @@ const verify = async (jwt_payload, done) => {
 const strategy = new Strategy(opts, verify)
 passport.use(strategy)
 passport.initialize()
+
 const requireToken = passport.authenticate('jwt', {session: false})
 const createUserToken = (req, user) => {
     if(
