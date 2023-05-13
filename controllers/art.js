@@ -6,7 +6,7 @@ const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
 
 // New Post Route
-router.post('/post', requireToken, async(req, res, next) => {
+router.post('/post', requireToken, async(req, res) => {
     try {
         const owner = req.user._id
         const { caption, image } = req.body;
@@ -79,6 +79,18 @@ router.get('/post/:id', async (req, res) => {
         res.status(400).json({ error: err.message })
     }
 });
+
+// Trending Route
+router.get('/posts/trending', async (req, res) => {
+    try {
+        const trendingPosts = await Post.find().sort({ likes: -1 }).limit(20);
+
+        res.json(trendingPosts);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 
 
 module.exports = router;
