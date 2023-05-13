@@ -4,6 +4,8 @@ const Post = require('../models/post');
 const User = require('../models/user');
 const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
+
+// New Post Route
 router.post('/post', requireToken, async(req, res, next) => {
     try {
         const owner = req.user._id
@@ -18,6 +20,27 @@ router.post('/post', requireToken, async(req, res, next) => {
         res.status(400).json({
             error: err.message
         });
+    }
+});
+// Edit Route
+router.put('/post/:id', requireToken, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        let updatedPost = req.body;
+        
+
+        const post = await Post.findById(postId);
+        console.log(post)
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found'});
+        }
+        handleValidateOwnership(req, post);
+
+        updatedPost = await Post.findByIdAndUpdate(postId, updatedPost, { new: true });
+
+        res.json(updatedPost);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 });
 
@@ -37,5 +60,6 @@ router.get('/post/:id', async (req, res) => {
         res.status(400).json({ error: err.message })
     }
 });
+
 
 module.exports = router;

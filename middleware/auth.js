@@ -38,8 +38,8 @@ const createUserToken = (req, user) => {
 }
 
 const handleValidateOwnership = (req, document) => {
-    const ownerId = document.owner._id || document.owner
-
+    const ownerId = document.user._id || document.user
+    console.log(ownerId)
     if (!req.user._id.equals(ownerId)) {
         throw Error('Unauthorized Access');
     } else {
