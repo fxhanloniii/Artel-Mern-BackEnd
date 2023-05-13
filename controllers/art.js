@@ -44,6 +44,25 @@ router.put('/post/:id', requireToken, async (req, res) => {
     }
 });
 
+// Delete Route
+router.delete('/post/:id', requireToken, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found'});
+        }
+
+        handleValidateOwnership(req, post);
+
+        await Post.findByIdAndDelete(postId);
+        res.json({ message: 'Post deleted successfully' });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+// Post Show Page
 router.get('/post/:id', async (req, res) => {
     try {
         const postId = req.params.id;
