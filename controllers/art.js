@@ -104,7 +104,7 @@ router.get('/tags/:tag', async (req, res) => {
 });
 
 // Comments Routes
-
+// Comment Post Route
 router.post('/:id/comment', requireToken, async (req, res) => {
     try {
         const postId = req.params.id;
