@@ -91,6 +91,17 @@ router.get('/posts/trending', async (req, res) => {
     }
 });
 
+// Tags Route
+router.get('/posts/tags/:tag', async (req, res) => {
+    try {
+        const tag = req.params.tag;
+        const posts = await Post.find({ tags: tag });
+        res.json(posts);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 
 
 

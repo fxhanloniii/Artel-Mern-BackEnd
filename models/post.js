@@ -15,6 +15,9 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    tags: [{
+        type: String,
+    }],
     comments: [
         {
             type: mongoose.Schema.Types.ObjectId,
