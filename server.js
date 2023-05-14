@@ -15,7 +15,8 @@ app.use('/auth', authController);
 
 app.use('/art', artController);
 
-app.use('user', userController);
+app.use('/user', userController);
+
 
 app.get('/*', (req,res) => {
     res.json({comment: 'This is a bad URL'});

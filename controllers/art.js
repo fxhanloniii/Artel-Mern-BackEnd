@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
 const User = require('../models/user');
+const Comment = require('../models/comment');
 const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
 
 // New Post Route
-router.post('/post', requireToken, async(req, res) => {
+router.post('', requireToken, async(req, res) => {
     try {
         const owner = req.user._id
         const { caption, image } = req.body;
@@ -23,7 +24,7 @@ router.post('/post', requireToken, async(req, res) => {
     }
 });
 // Edit Route
-router.put('/post/:id', requireToken, async (req, res) => {
+router.put('/:id', requireToken, async (req, res) => {
     try {
         const postId = req.params.id;
         let updatedPost = req.body;
@@ -45,7 +46,7 @@ router.put('/post/:id', requireToken, async (req, res) => {
 });
 
 // Delete Route
-router.delete('/post/:id', requireToken, async (req, res) => {
+router.delete('/:id', requireToken, async (req, res) => {
     try {
         const postId = req.params.id;
         const post = await Post.findById(postId);
@@ -63,7 +64,7 @@ router.delete('/post/:id', requireToken, async (req, res) => {
 });
 
 // Post Show Page
-router.get('/post/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const postId = req.params.id;
         console.log(postId)
@@ -81,7 +82,7 @@ router.get('/post/:id', async (req, res) => {
 });
 
 // Trending Route
-router.get('/posts/trending', async (req, res) => {
+router.get('/trending', async (req, res) => {
     try {
         const trendingPosts = await Post.find().sort({ likes: -1 }).limit(20);
 
@@ -92,7 +93,7 @@ router.get('/posts/trending', async (req, res) => {
 });
 
 // Tags Route
-router.get('/posts/tags/:tag', async (req, res) => {
+router.get('/tags/:tag', async (req, res) => {
     try {
         const tag = req.params.tag;
         const posts = await Post.find({ tags: tag });
@@ -102,6 +103,26 @@ router.get('/posts/tags/:tag', async (req, res) => {
     }
 });
 
+// Comments Routes
+
+router.post('/:id/comment', requireToken, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const owner = req.user._id;
+        const commentText = req.body;
+
+        // Create Comment and associate it with the post
+        const comment = await Comment.create({
+            post: postId,
+            user: owner,
+            text: commentText,
+        });
+
+        res.status(201).json(comment)
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
 
 
 
