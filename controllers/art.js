@@ -109,14 +109,18 @@ router.post('/:id/comment', requireToken, async (req, res) => {
     try {
         const postId = req.params.id;
         const owner = req.user._id;
-        const commentText = req.body;
-
+        const commentText = req.body.text;
+        console.log(commentText)
         // Create Comment and associate it with the post
         const comment = await Comment.create({
             post: postId,
             user: owner,
             text: commentText,
         });
+        // Add Comment ID to the Post Document
+        await Post.findByIdAndUpdate(postId, {
+            $push: { comments: comment._id },
+        }),
 
         res.status(201).json(comment)
     } catch (err) {
