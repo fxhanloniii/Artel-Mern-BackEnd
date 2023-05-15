@@ -56,5 +56,20 @@ router.post('/login', async (req, res, next) => {
     };
 });
 
+// LogOut
+
+router.get('/logout', requireToken, async (req,res) => {
+    try {
+        const currentUser = req.user.username
+        delete req.user
+        res.status(200).json({
+            message: `${currentUser} currently logged out`,
+            isLoggedIn: false,
+            token: '',
+        });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
 
 module.exports = router;
