@@ -7,7 +7,7 @@ const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
 
 // New Post Route
-router.post('', requireToken, async(req, res) => {
+router.post('/', requireToken, async(req, res) => {
     try {
         const owner = req.user._id
         const { caption, image } = req.body;
@@ -73,9 +73,25 @@ router.get('/:id', async (req, res) => {
         if (!post) {
             return res.status(404).json({ error: 'Post not found'});
         }
-        console.log(post)
+        // console.log(post)
+        // console.log(user.username)
+        const commentIds = post.comments
+        console.log(commentIds)
+        const comments = await Comment.find({ _id: { $in: commentIds } })
+        console.log(comments)
+        const commentInfo = [];
+        for (const comment of comments) {
+            const commenter = await User.findById(comment.user)
+            commentInfo.push({
+                id: comment._id,
+                username: commenter.username,
+                text: comment.text,
+                createdAt: comment.createdAt
+            });
+        };
+        console.log(commentInfo)
         console.log(user.username)
-        res.json({post, username: user.username});
+        res.json({post, username: user.username, comments: commentInfo});
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
