@@ -15,7 +15,7 @@ app.use('/auth', authController);
 
 app.use('/art', artController);
 
-app.use('/user', userController);
+app.use('/profile', userController);
 
 
 app.get('/*', (req,res) => {

@@ -5,11 +5,11 @@ const User = require('../models/user');
 const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
 // Get User Profile
-router.get('/profile/:id', async (req, res) => {
+router.get('/:username', async (req, res) => {
     try {
-        const userId = req.params.id;
-        const user = await User.findById(userId);
-
+        const username = req.params.username;
+        const user = await User.findOne({ username });
+        console.log(user)
         if (!user) {
             return res.status(404).json({ error: 'User not found'});
         }
