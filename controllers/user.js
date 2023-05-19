@@ -4,6 +4,21 @@ const Post = require('../models/post');
 const User = require('../models/user');
 const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
+
+
+// API EndPoint For Sending User Info Back
+router.get('', requireToken, async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await User.findById(userId);
+
+        res.json(user)
+    } catch (err) {
+        return res.status(404).json({ error: 'User not found'});
+    }
+});
+
 // Get User Profile
 router.get('/profile/:username', async (req, res) => {
     try {

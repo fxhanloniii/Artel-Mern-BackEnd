@@ -5,6 +5,20 @@ const User = require('../models/user');
 const Comment = require('../models/comment');
 const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
+// Recent Posts
+router.get('/', async (req, res) => {
+    console.log('trying')
+    try {
+        const posts = await Post.find({}).sort({ _id: -1 }).limit(10);
+        console.log(posts)
+        res.json(posts)
+        
+    } catch (err) {
+        res.status(400).json({
+            error: err.message
+        });
+    }
+})
 
 // New Post Route
 router.post('/', requireToken, async(req, res) => {
