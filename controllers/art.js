@@ -40,10 +40,10 @@ router.post('/', requireToken, async(req, res) => {
 // Edit Route
 router.put('/:id', requireToken, async (req, res) => {
     try {
+        console.log('editing')
         const postId = req.params.id;
         let updatedPost = req.body;
         
-
         const post = await Post.findById(postId);
         console.log(post)
         if (!post) {
@@ -81,7 +81,6 @@ router.delete('/:id', requireToken, async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const postId = req.params.id;
-        console.log(postId)
         const post = await Post.findById(postId);
         const user = await User.findById(post.user)
         if (!post) {
@@ -90,9 +89,7 @@ router.get('/:id', async (req, res) => {
         // console.log(post)
         // console.log(user.username)
         const commentIds = post.comments
-        console.log(commentIds)
         const comments = await Comment.find({ _id: { $in: commentIds } })
-        console.log(comments)
         const commentInfo = [];
         for (const comment of comments) {
             const commenter = await User.findById(comment.user)
@@ -103,8 +100,6 @@ router.get('/:id', async (req, res) => {
                 createdAt: comment.createdAt
             });
         };
-        console.log(commentInfo)
-        console.log(user.username)
         res.json({post, username: user.username, comments: commentInfo});
     } catch (err) {
         res.status(400).json({ error: err.message })
