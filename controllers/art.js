@@ -106,16 +106,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Trending Route
-router.get('/trending', async (req, res) => {
-    try {
-        const trendingPosts = await Post.find().sort({ likes: -1 }).limit(20);
 
-        res.json(trendingPosts);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-});
 
 // Tags Route
 router.get('/tags/:tag', async (req, res) => {
