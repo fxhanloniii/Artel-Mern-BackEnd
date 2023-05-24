@@ -153,6 +153,35 @@ router.post('/:id/comment', requireToken, async (req, res) => {
     }
 });
 
+router.delete('/:id/comment/:commentId', requireToken, async (req, res) => {
+    try {
+        console.log('trying')
+        const commentId = req.params.commentId;
+        const userId = req.user._id
+        const postId = req.params.id
+
+        const comment = await Comment.findById(commentId);
+        console.log(comment);
+        if (!comment) {
+            return res.status(404).json({ error: 'Comment Not Found'})
+        }
+        console.log(comment.user.toString())
+        console.log(userId)
+        if (comment.user.toString() !== userId.toString()) {
+            return res.status(401).json({ error: 'Unauthorized'})
+        }
+
+        await Comment.findByIdAndDelete(commentId);
+
+        await Post.findByIdAndUpdate(postId, {
+            $pull: { comments: commentId }
+        });
+        res.json({ message: 'Comment Deleted Successfully'})
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+})
+
 
 
 module.exports = router;
