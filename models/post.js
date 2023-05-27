@@ -24,10 +24,10 @@ const postSchema = new mongoose.Schema({
             ref: 'Comment',
         },  
     ],
-    likes: {
-        type: Number,
-        default: 0,
-    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
 });
 
 const Post = mongoose.model('post', postSchema);

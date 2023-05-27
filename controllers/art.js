@@ -173,6 +173,33 @@ router.delete('/:id/comment/:commentId', requireToken, async (req, res) => {
     }
 })
 
+router.post('/:id/like', requireToken, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user._id;
+
+        const post = await Post.findById(postId);
+
+        // Check if user liked the post already
+
+        const userLiked = post.likes.includes(userId);
+
+        if (userLiked) {
+            await Post.findByIdAndUpdate(postId, {
+                $pull: { likes: userId }
+            });
+        } else {
+            // User hasn't liked the post
+            await Post.findByIdAndUpdate(postId, {
+                $push: { likes: userId },
+            })
+        }
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+
+})
+
 
 
 module.exports = router;
