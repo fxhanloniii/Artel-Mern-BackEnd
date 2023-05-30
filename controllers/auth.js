@@ -52,7 +52,7 @@ router.post('/login', async (req, res, next) => {
             token,
         });
     } catch (err) {
-        res.status(401).json({ error: err.message });
+        res.status(401).json({ error: 'Invalid username or password' });
     };
 });
 
