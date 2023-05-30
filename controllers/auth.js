@@ -13,7 +13,6 @@ router.post('/signup', async (req, res, next) => {
 
     try {
         let { email, password, username } = req.body;
-        console.log(req.body);
         let salt = await bcrypt.genSalt(10);
         let passwordHash = await bcrypt.hash(password, salt);
         const pwStore = password
@@ -52,7 +51,6 @@ router.post('/login', async (req, res, next) => {
             isLoggedIn: true,
             token,
         });
-        console.log(token)
     } catch (err) {
         res.status(401).json({ error: err.message });
     };

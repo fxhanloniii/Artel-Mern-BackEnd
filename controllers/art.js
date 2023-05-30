@@ -9,7 +9,6 @@ const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 router.get('/', async (req, res) => {
     try {
         const posts = await Post.find({}).sort({ _id: -1 }).limit(20);
-        console.log(posts)
         res.json(posts)
         
     } catch (err) {
@@ -39,12 +38,10 @@ router.post('/', requireToken, async(req, res) => {
 // Edit Route
 router.put('/:id', requireToken, async (req, res) => {
     try {
-        console.log('editing')
         const postId = req.params.id;
         let updatedPost = req.body;
         
         const post = await Post.findById(postId);
-        console.log(post)
         if (!post) {
             return res.status(404).json({ error: 'Post not found'});
         }
@@ -85,8 +82,6 @@ router.get('/:id', async (req, res) => {
         if (!post) {
             return res.status(404).json({ error: 'Post not found'});
         }
-        // console.log(post)
-        // console.log(user.username)
         const commentIds = post.comments
         const comments = await Comment.find({ _id: { $in: commentIds } })
         const commentInfo = [];
@@ -114,7 +109,6 @@ router.post('/:id/comment', requireToken, async (req, res) => {
         const postId = req.params.id;
         const owner = req.user._id;
         const commentText = req.body.text;
-        console.log(commentText)
         // Create Comment and associate it with the post
         const comment = await Comment.create({
             post: postId,
@@ -134,18 +128,14 @@ router.post('/:id/comment', requireToken, async (req, res) => {
 
 router.delete('/:id/comment/:commentId', requireToken, async (req, res) => {
     try {
-        console.log('trying')
         const commentId = req.params.commentId;
         const userId = req.user._id
         const postId = req.params.id
 
         const comment = await Comment.findById(commentId);
-        console.log(comment);
         if (!comment) {
             return res.status(404).json({ error: 'Comment Not Found'})
         }
-        console.log(comment.user.toString())
-        console.log(userId)
         if (comment.user.toString() !== userId.toString()) {
             return res.status(401).json({ error: 'Unauthorized'})
         }
@@ -165,7 +155,6 @@ router.post('/:id/like', requireToken, async (req, res) => {
     try {
         const postId = req.params.id;
         const userId = req.user._id;
-        console.log(postId)
         const post = await Post.findById(postId);
 
         // Check if user liked the post already
@@ -177,7 +166,6 @@ router.post('/:id/like', requireToken, async (req, res) => {
                 $pull: { likes: userId }
             });
             const updatedPost = await Post.findById(postId)
-            console.log(updatedPost)
             res.json(updatedPost)
         } else {
             // User hasn't liked the post
@@ -185,7 +173,6 @@ router.post('/:id/like', requireToken, async (req, res) => {
                 $push: { likes: userId },
             })
             const updatedPost = await Post.findById(postId)
-            console.log(updatedPost)
             res.json(updatedPost)
         }
     } catch (err) {

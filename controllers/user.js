@@ -24,12 +24,10 @@ router.get('/profile/:username', async (req, res) => {
     try {
         const username = req.params.username;
         const user = await User.findOne({ username });
-        console.log(user)
         if (!user) {
             return res.status(404).json({ error: 'User not found'});
         }
         const userPosts = await Post.find({ user: user._id });
-        console.log(userPosts)
         res.json({user, posts: userPosts})
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -38,7 +36,6 @@ router.get('/profile/:username', async (req, res) => {
 
 // Trending Route
 router.get('/trending', requireToken, async (req, res) => {
-    console.log('trying')
     try {
         const trendingPosts = await Post.find().sort({ likes: -1 }).limit(20);
 
