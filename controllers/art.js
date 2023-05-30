@@ -7,9 +7,8 @@ const { handleValidateOwnership, requireToken } = require('../middleware/auth');
 
 // Recent Posts
 router.get('/', async (req, res) => {
-    console.log('trying')
     try {
-        const posts = await Post.find({}).sort({ _id: -1 }).limit(10);
+        const posts = await Post.find({}).sort({ _id: -1 }).limit(20);
         console.log(posts)
         res.json(posts)
         
@@ -108,17 +107,6 @@ router.get('/:id', async (req, res) => {
 
 
 
-// Tags Route
-router.get('/tags/:tag', async (req, res) => {
-    try {
-        const tag = req.params.tag;
-        const posts = await Post.find({ tags: tag });
-        res.json(posts);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-});
-
 // Comments Routes
 // Comment Post Route
 router.post('/:id/comment', requireToken, async (req, res) => {
@@ -177,7 +165,7 @@ router.post('/:id/like', requireToken, async (req, res) => {
     try {
         const postId = req.params.id;
         const userId = req.user._id;
-
+        console.log(postId)
         const post = await Post.findById(postId);
 
         // Check if user liked the post already
@@ -188,11 +176,17 @@ router.post('/:id/like', requireToken, async (req, res) => {
             await Post.findByIdAndUpdate(postId, {
                 $pull: { likes: userId }
             });
+            const updatedPost = await Post.findById(postId)
+            console.log(updatedPost)
+            res.json(updatedPost)
         } else {
             // User hasn't liked the post
             await Post.findByIdAndUpdate(postId, {
                 $push: { likes: userId },
             })
+            const updatedPost = await Post.findById(postId)
+            console.log(updatedPost)
+            res.json(updatedPost)
         }
     } catch (err) {
         res.status(400).json({ error: err.message });
