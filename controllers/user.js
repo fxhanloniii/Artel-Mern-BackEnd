@@ -37,7 +37,7 @@ router.get('/profile/:username', async (req, res) => {
 // Trending Route
 router.get('/trending', requireToken, async (req, res) => {
     try {
-        const trendingPosts = await Post.find().sort({ 'likes.length': -1 }).limit(20);
+        const trendingPosts = await Post.find().sort({ 'likes': -1 }).limit(20);
 
         res.json(trendingPosts);
     } catch (err) {
